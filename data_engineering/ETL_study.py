@@ -37,6 +37,7 @@ equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn(
     "value", regexp_replace("value", r"(\d{4})/(\d{2})/(\d{1,2})", "$1-$2-$3 00:00:00"))
 
 
+
 equipment_failure_sensors_df = equipment_failure_sensors_df.select(
     regexp_extract("value", r"^\[(.+)\]\t", 1).alias("timestamp"),
     regexp_extract("value", r"\]\t(\w+)\t", 1).alias("level"),
@@ -56,6 +57,15 @@ equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn("level", 
     .withColumn("sensor_id", col("sensor_id").cast(IntegerType())) \
     .withColumn("temperature", col("temperature").cast(DoubleType())) \
     .withColumn("vibration", col("vibration").cast(DoubleType()))
+
+
+
+# add column year, month, day
+equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn("year", year("timestamp")) \
+    .withColumn("month", month("timestamp")) \
+    .withColumn("day", dayofmonth("timestamp")) \
+    .withColumn("hour", hour("timestamp"))
+
 
 equipment_failure_sensors_df.printSchema()
 
