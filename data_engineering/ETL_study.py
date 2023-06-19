@@ -56,15 +56,11 @@ equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn("level", 
     .withColumn("timestamp", col("timestamp").cast(TimestampType())) \
     .withColumn("sensor_id", col("sensor_id").cast(IntegerType())) \
     .withColumn("temperature", col("temperature").cast(DoubleType())) \
-    .withColumn("vibration", col("vibration").cast(DoubleType()))
-
-
-
-# add column year, month, day
-equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn("year", year("timestamp")) \
+    .withColumn("vibration", col("vibration").cast(DoubleType())) \
+    .withColumn("year", year("timestamp")) \
     .withColumn("month", month("timestamp")) \
     .withColumn("day", dayofmonth("timestamp")) \
-    .withColumn("hour", hour("timestamp"))
+    .withColumn("ts_load", current_timestamp())
 
 
 equipment_failure_sensors_df.printSchema()
@@ -72,7 +68,8 @@ equipment_failure_sensors_df.printSchema()
 # COMMAND ----------
 
 equipament_sensors_df = equipament_sensors_df.withColumn("equipment_id", col("equipment_id").cast(IntegerType())) \
-    .withColumn("sensor_id", col("sensor_id").cast(IntegerType()))
+    .withColumn("sensor_id", col("sensor_id").cast(IntegerType())) \
+    .withColumn("ts_load", current_timestamp())
 
 equipament_sensors_df.printSchema()
 
@@ -80,34 +77,38 @@ equipament_sensors_df.printSchema()
 
 equipament_df = equipament_df.withColumn("equipment_id", col("equipment_id").cast(IntegerType())) \
     .withColumn("group_name", col("group_name").cast(StringType())) \
-    .withColumn("name", col("name").cast(StringType()))
-
+    .withColumn("name", col("name").cast(StringType())) \
+    .withColumn("ts_load", current_timestamp())
+    
 equipament_df.printSchema()
 
 # COMMAND ----------
 
-equipment_failure_sensors_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipment_failure_sensors.parquet")
-equipament_sensors_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipament_sensors.parquet")
-equipament_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipament.parquet")
+equipment_failure_sensors_df.write.mode("overwrite").partitionBy("year", "month", "day").parquet("/mnt/lake/raw/equipment_failure_sensors", compression="snappy")
+equipament_sensors_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipament_sensors", compression="snappy")
+equipament_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipament", compression="snappy")
 
 # COMMAND ----------
 
-equipment_failure_sensors_df = spark.read.parquet("raw/equipment_failure_sensors.parquet")
-equipament_sensors_df = spark.read.parquet("raw/equipament_sensors.parquet")
-equipament_df = spark.read.parquet("raw/equipament.parquet")
+equipment_failure_sensors_df = spark.read.parquet("/mnt/lake/raw/equipment_failure_sensors")
+equipament_sensors_df = spark.read.parquet("/mnt/lake/raw/equipament_sensors")
+equipament_df = spark.read.parquet("/mnt/lake/raw/equipament")
 
 # COMMAND ----------
 
-# Join three tables
 fact_table = equipment_failure_sensors_df.join(equipament_sensors_df, "sensor_id", "left") \
     .select("sensor_id", "equipment_id", "timestamp", "level", "temperature", "vibration")
 
 fact_table.show(5, truncate=False)
 
-fact_table.write.mode("overwrite").partitionBy("equipment_id", "sensor_id").parquet("prepared/equipment_failure.parquet")
+fact_table.write.mode("overwrite").partitionBy("equipment_id", "sensor_id").format("delta").save("/mnt/lake/prepared/equipment_failure")
 
 # COMMAND ----------
 
 equipament_dim = equipament_df.select("equipment_id", "group_name", "name")
 equipament_dim.show(5, truncate=False)
-equipament_dim.write.mode("overwrite").parquet("prepared/equipament.parquet")
+equipament_dim.write.mode("overwrite").format("delta").save("/mnt/lake/prepared/equipament")
+
+# COMMAND ----------
+
+
