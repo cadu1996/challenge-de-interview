@@ -1,8 +1,4 @@
 # Databricks notebook source
-!unrar
-
-# COMMAND ----------
-
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
@@ -13,9 +9,17 @@ spark = SparkSession.builder.appName("ETL").getOrCreate()
 
 # COMMAND ----------
 
-compressed_file_path = "staging/equipment_failure_sensors.txt.gz"
-equipament_sensors_path = "staging/equipment_sensors.csv"
-equipament_path = "staging/equipment.json"
+dbutils.fs.mounts()
+
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/source")
+
+# COMMAND ----------
+
+compressed_file_path = "/mnt/source/equpment_failure_sensors.txt.gz"
+equipament_sensors_path = "/mnt/source/equipment_sensors.csv"
+equipament_path = "/mnt/source/equipment.json"
 
 # COMMAND ----------
 
@@ -23,8 +27,8 @@ equipment_failure_sensors_df = spark.read.text(compressed_file_path)
 equipament_sensors_df = spark.read.csv(equipament_sensors_path, header=True, sep=",")
 equipament_df = spark.read.json(equipament_path, multiLine=True)
 
-display(equipment_failure_sensors_df.show(5, truncate=False))
-display(equipament_sensors_df.show(5, truncate=False))
+display(equipment_failure_sensors_df)
+display(equipament_sensors_df)
 display(equipament_df)
 
 # COMMAND ----------
@@ -72,9 +76,9 @@ equipament_df.printSchema()
 
 # COMMAND ----------
 
-equipment_failure_sensors_df.write.mode("overwrite").parquet("raw/equipment_failure_sensors.parquet")
-equipament_sensors_df.write.mode("overwrite").parquet("raw/equipament_sensors.parquet")
-equipament_df.write.mode("overwrite").parquet("raw/equipament.parquet")
+equipment_failure_sensors_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipment_failure_sensors.parquet")
+equipament_sensors_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipament_sensors.parquet")
+equipament_df.write.mode("overwrite").parquet("/mnt/lake/raw/equipament.parquet")
 
 # COMMAND ----------
 
