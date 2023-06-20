@@ -4,7 +4,9 @@ from pyspark.sql.functions import *
 
 # COMMAND ----------
 
-failure_log_table_df = spark.read.format("delta").load("/mnt/lake/prepared/failure_log_table")
+failure_log_table_df = spark.read.format("delta").load(
+    "/mnt/lake/prepared/failure_log_table"
+)
 failure_log_table_df.createOrReplaceTempView("equipment_failures")
 
 display(failure_log_table_df.limit(10))
@@ -24,8 +26,8 @@ display(failure_log_table_df.limit(10))
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT COUNT(*) as total_failures 
-# MAGIC FROM equipment_failures 
+# MAGIC SELECT COUNT(*) as total_failures
+# MAGIC FROM equipment_failures
 # MAGIC
 
 # COMMAND ----------
@@ -40,10 +42,10 @@ display(failure_log_table_df.limit(10))
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT equipment_name, COUNT(*) as failures 
-# MAGIC FROM equipment_failures 
-# MAGIC GROUP BY equipment_name 
-# MAGIC ORDER BY failures DESC 
+# MAGIC SELECT equipment_name, COUNT(*) as failures
+# MAGIC FROM equipment_failures
+# MAGIC GROUP BY equipment_name
+# MAGIC ORDER BY failures DESC
 # MAGIC LIMIT 1
 # MAGIC
 
@@ -66,23 +68,23 @@ display(failure_log_table_df.limit(10))
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT equipment_group_name, AVG(failures) as average_failures 
+# MAGIC SELECT equipment_group_name, AVG(failures) as average_failures
 # MAGIC FROM (
-# MAGIC     SELECT equipment_group_name, equipment_name, COUNT(*) as failures 
-# MAGIC     FROM equipment_failures 
+# MAGIC     SELECT equipment_group_name, equipment_name, COUNT(*) as failures
+# MAGIC     FROM equipment_failures
 # MAGIC     GROUP BY equipment_group_name, equipment_name
-# MAGIC ) 
-# MAGIC GROUP BY equipment_group_name 
+# MAGIC )
+# MAGIC GROUP BY equipment_group_name
 # MAGIC ORDER BY average_failures
 
 # COMMAND ----------
 
-# MAGIC %md 
+# MAGIC %md
 # MAGIC ## 4. Rank the sensors which present the most number of errors by equipment name in an equipment group.
 # MAGIC
 # MAGIC The query accomplishes this by performing the following steps:
 # MAGIC
-# MAGIC 1. It selects the relevant fields from the `equipment_failures` table, which are `equipment_group_name`, `equipment_name`, and `sensor_id`. 
+# MAGIC 1. It selects the relevant fields from the `equipment_failures` table, which are `equipment_group_name`, `equipment_name`, and `sensor_id`.
 # MAGIC
 # MAGIC 2. It counts the number of errors (referred to as `failures` in the query) for each unique combination of `equipment_group_name`, `equipment_name`, and `sensor_id`.
 # MAGIC
@@ -94,7 +96,7 @@ display(failure_log_table_df.limit(10))
 
 # MAGIC %sql
 # MAGIC SELECT equipment_group_name, equipment_name, sensor_id, COUNT(*) as failures,
-# MAGIC        RANK() OVER (PARTITION BY equipment_group_name, equipment_name ORDER BY COUNT(*) DESC) as rank 
-# MAGIC FROM equipment_failures 
+# MAGIC        RANK() OVER (PARTITION BY equipment_group_name, equipment_name ORDER BY COUNT(*) DESC) as rank
+# MAGIC FROM equipment_failures
 # MAGIC GROUP BY equipment_group_name, equipment_name, sensor_id
 # MAGIC

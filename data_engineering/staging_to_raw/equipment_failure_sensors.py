@@ -10,7 +10,9 @@ PATH_TO = "/mnt/lake/raw/equipment_failure_sensors"
 
 # COMMAND ----------
 
-spark = SparkSession.builder.appName("Equipament Failure Sensors - Landing to Raw").getOrCreate()
+spark = SparkSession.builder.appName(
+    "Equipament Failure Sensors - Landing to Raw"
+).getOrCreate()
 
 # COMMAND ----------
 
@@ -21,7 +23,8 @@ display(equipment_failure_sensors_df.limit(10))
 # COMMAND ----------
 
 equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn(
-    "value", regexp_replace("value", r"(\d{4})/(\d{2})/(\d{1,2})", "$1-$2-$3 00:00:00"))
+    "value", regexp_replace("value", r"(\d{4})/(\d{2})/(\d{1,2})", "$1-$2-$3 00:00:00")
+)
 
 equipment_failure_sensors_df = equipment_failure_sensors_df.select(
     regexp_extract("value", r"^\[(.+)\]\t", 1).alias("timestamp"),
@@ -35,21 +38,22 @@ display(equipment_failure_sensors_df.limit(10))
 
 # COMMAND ----------
 
-equipment_failure_sensors_df = equipment_failure_sensors_df.withColumn("level", col("level").cast(StringType())) \
-    .withColumn("timestamp", col("timestamp").cast(TimestampType())) \
-    .withColumn("sensor_id", col("sensor_id").cast(IntegerType())) \
-    .withColumn("temperature", col("temperature").cast(DoubleType())) \
-    .withColumn("vibration", col("vibration").cast(DoubleType())) \
-    .withColumn("year", year("timestamp")) \
-    .withColumn("month", month("timestamp")) \
-    .withColumn("day", dayofmonth("timestamp")) \
+equipment_failure_sensors_df = (
+    equipment_failure_sensors_df.withColumn("level", col("level").cast(StringType()))
+    .withColumn("timestamp", col("timestamp").cast(TimestampType()))
+    .withColumn("sensor_id", col("sensor_id").cast(IntegerType()))
+    .withColumn("temperature", col("temperature").cast(DoubleType()))
+    .withColumn("vibration", col("vibration").cast(DoubleType()))
+    .withColumn("year", year("timestamp"))
+    .withColumn("month", month("timestamp"))
+    .withColumn("day", dayofmonth("timestamp"))
     .withColumn("ts_load", current_timestamp())
+)
 
 equipment_failure_sensors_df.printSchema()
 
 # COMMAND ----------
 
-equipment_failure_sensors_df.repartition("year", "month", "day")\
-   .write.mode("overwrite")\
-   .partitionBy("year", "month", "day")\
-   .parquet(PATH_TO, compression="snappy")
+equipment_failure_sensors_df.repartition("year", "month", "day").write.mode(
+    "overwrite"
+).partitionBy("year", "month", "day").parquet(PATH_TO, compression="snappy")

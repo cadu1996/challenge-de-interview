@@ -20,11 +20,13 @@ display(equipament_df.limit(10))
 
 # COMMAND ----------
 
-equipament_df = equipament_df.withColumn("equipment_id", col("equipment_id").cast(IntegerType())) \
-    .withColumn("group_name", col("group_name").cast(StringType())) \
-    .withColumn("name", col("name").cast(StringType())) \
+equipament_df = (
+    equipament_df.withColumn("equipment_id", col("equipment_id").cast(IntegerType()))
+    .withColumn("group_name", col("group_name").cast(StringType()))
+    .withColumn("name", col("name").cast(StringType()))
     .withColumn("ts_load", current_timestamp())
-    
+)
+
 equipament_df.printSchema()
 
 # COMMAND ----------

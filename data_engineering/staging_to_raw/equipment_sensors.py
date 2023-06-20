@@ -10,7 +10,9 @@ PATH_TO = "/mnt/lake/raw/equipament_sensors"
 
 # COMMAND ----------
 
-spark = SparkSession.builder.appName("Equipament Sensors - Landing to Raw").getOrCreate()
+spark = SparkSession.builder.appName(
+    "Equipament Sensors - Landing to Raw"
+).getOrCreate()
 
 # COMMAND ----------
 
@@ -20,9 +22,13 @@ display(equipament_sensors_df.limit(10))
 
 # COMMAND ----------
 
-equipament_sensors_df = equipament_sensors_df.withColumn("equipment_id", col("equipment_id").cast(IntegerType())) \
-    .withColumn("sensor_id", col("sensor_id").cast(IntegerType())) \
+equipament_sensors_df = (
+    equipament_sensors_df.withColumn(
+        "equipment_id", col("equipment_id").cast(IntegerType())
+    )
+    .withColumn("sensor_id", col("sensor_id").cast(IntegerType()))
     .withColumn("ts_load", current_timestamp())
+)
 
 equipament_sensors_df.printSchema()
 
