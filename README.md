@@ -53,13 +53,15 @@ Follow the steps below to set up and run this project on your local environment.
 - Python 3.8+
 - Docker and Docker Compose (For running Airflow)
 - Git
+- Azure Storage Account
+- Databricks
 
 ## Configuration Steps
 
 1. **Clone the Repository**: First, clone this repository into your local environment using the following Git command:
 
 ```
-git clone https://github.com/<your_username>/<repository_name>.git
+git clone git@github.com:cadu1996/challenge-de-interview.git
 ```
 
 ## Using Docker and Docker Compose to Run Airflow
@@ -76,7 +78,27 @@ This command will download the necessary Docker images, build the containers, an
 
 2. **Access Airflow**: After the services have started, you can access the Airflow interface by opening your browser and going to `localhost:8080`.
 
+The Airflow interface requires you to log in. Use `airflow` for both the username and password.
+
+3. **Set Up Airflow Connection**: Once you're logged in, you need to create a connection within Airflow for your data sources. Follow the instructions in the Airflow documentation to set up the necessary connections.
+
+4. **Create Databricks Tasks**: You need to set up tasks in Databricks for the following files:
+
+
+- `data_analytics/failure_log_analysis.py`: This script contains the logic for analyzing the equipment failure log data. It includes the code for generating the answers to the challenge questions.
+
+- `data_engineering/raw_to_prepared/failure_log_table.py`: This script is responsible for moving and transforming data from the "raw" layer to the "prepared" layer of the data lake. It applies specific transformations designed to structure the data in a way that facilitates answering the challenge questions.
+
+- `data_engineering/staging_to_raw/equipment_failure_sensors.py`: This script moves data from the "staging" layer to the "raw" layer of the data lake. It applies basic transformations to the sensor data related to equipment failures, preparing it for further processing.
+
+- `data_engineering/staging_to_raw/equipment.py`: This script transfers data about the equipment from the "staging" layer to the "raw" layer of the data lake. It also applies basic transformations to the data, preparing it for the next stage of processing.
+
+- `data_engineering/staging_to_raw/equipment_sensors.py`: This script moves the data regarding the relationship between equipment and sensors from the "staging" layer to the "raw" layer in the data lake. It applies basic transformations to prepare the data for subsequent analysis stages.
+
+These scripts form the basis of the data pipeline in this project, facilitating the movement and transformation of data from one layer of the data lake to another, and finally enabling the analysis of the data to answer the challenge questions.
+
 Now you should be able to see the application running and Airflow operational.
+
 
 
 ### Data Lake Structure
