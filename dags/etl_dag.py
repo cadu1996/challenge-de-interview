@@ -1,99 +1,46 @@
+
 from airflow import DAG
-from airflow.providers.microsoft.azure.transfers.local_to_wasb import LocalFilesystemToWasbOperator
-from airflow.providers.databricks.operators.databricks import DatabricksSubmitRunOperator
+from airflow.utils.task_group import TaskGroup
+from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
+from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 from airflow.utils.dates import days_ago
 
-dag = DAG(
-    dag_id='azure_databricks_dag',
-    start_date=days_ago(1),
-    schedule_interval=None,
-)
+default_args = {
+  'owner': 'airflow'
+}
 
-# Tasks to copy data to Azure Data Lake Gen 2
-copy_to_azure_1 = LocalFilesystemToWasbOperator(
-    task_id='copy_to_azure_1',
-    file_path='/path/to/your/file1',
-    container_name='azure_folder/file1',
-    blob_name='file1',
-    dag=dag,
-)
 
-copy_to_azure_2 = LocalFilesystemToWasbOperator(
-    task_id='copy_to_azure_2',
-    file_path='/path/to/your/file2',
-    container_name='azure_folder/file2',
-    blob_name='file2',
-    dag=dag,
-)
+with DAG('databricks_dag',
+  start_date = days_ago(1),
+  schedule_interval = None,
+  default_args = default_args
+  ) as dag:
 
-copy_to_azure_3 = LocalFilesystemToWasbOperator(
-    task_id='copy_to_azure_3',
-    file_path='/path/to/your/file3',
-    container_name='azure_folder/file3',
-    blob_name='file2',
-    dag=dag,
-)
 
-# Tasks to run jobs on Databricks
-run_databricks_job_1 = DatabricksSubmitRunOperator(
-    task_id='run_databricks_job_1',
-    databricks_conn_id='databricks_default',
-    json={
-      "new_cluster": {
-        "spark_version": "7.3.x-scala2.12",
-        "node_type_id": "i3.xlarge",
-        "num_workers": 2
-      },
-      "notebook_task": {
-        "notebook_path": "/path/to/your/notebook1",
-      },
-    },
-    dag=dag,
-)
+    with TaskGroup('staging_to_raw') as staging_to_raw:
+        equipment_failure_sensor = DatabricksRunNowOperator(
+            task_id = 'equipment_failure_sensor',
+            databricks_conn_id = 'databricks_default',
+            job_id = 360232576843179
+        )
 
-run_databricks_job_2 = DatabricksSubmitRunOperator(
-    task_id='run_databricks_job_2',
-    databricks_conn_id='databricks_default',
-    json={
-      "new_cluster": {
-        "spark_version": "7.3.x-scala2.12",
-        "node_type_id": "i3.xlarge",
-        "num_workers": 2
-      },
-      "notebook_task": {
-        "notebook_path": "/path/to/your/notebook2",
-      },
-    },
-    dag=dag,
-)
+        equipment_sensor = DatabricksRunNowOperator(
+            task_id = 'equipment_sensor',
+            databricks_conn_id = 'databricks_default',
+            job_id = 1101807116395376
+        )
 
-run_databricks_job_3 = DatabricksSubmitRunOperator(
-    task_id='run_databricks_job_3',
-    databricks_conn_id='databricks_default',
-    json={
-      "new_cluster": {
-        "spark_version": "7.3.x-scala2.12",
-        "node_type_id": "i3.xlarge",
-        "num_workers": 2
-      },
-      "notebook_task": {
-        "notebook_path": "/path/to/your/notebook3",
-      },
-    },
-    dag=dag,
-)
+        equipment = DatabricksRunNowOperator(
+            task_id = 'equipment',
+            databricks_conn_id = 'databricks_default',
+            job_id = 909156579247786
+        )
 
-# Tasks to run jobs on Databricks (again)
-run_databricks_job_4 = DatabricksSubmitRunOperator(
-    task_id='run_databricks_job_4',
-    databricks_conn_id='databricks_default',
-    json={
-      "new_cluster": {
-        "spark_version": "7.3.x-scala2.12",
-        "node_type_id": "i3.xlarge",
-        "num_workers": 2
-      },
-      "notebook_task": {
-        "notebook_path": "/path/to/your/notebook4",
-     
 
+    failure_log_table = DatabricksRunNowOperator(
+        task_id = 'failure_log_table',
+        databricks_conn_id = 'databricks_default',
+        job_id = 520504070910103
+    )
+
+    staging_to_raw >> failure_log_table
