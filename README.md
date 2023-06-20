@@ -44,15 +44,40 @@ The following architecture was implemented to solve this challenge:
 
 ![Architecture](img/architecture.png)
 
-### Technologies Used
+# Getting Started
 
-- Python
-- Pyspark
-- Airflow
-- Delta Lake
-- Storage Account V2
-- Databricks
-- Docker
+Follow the steps below to set up and run this project on your local environment.
+
+## Prerequisites
+
+- Python 3.8+
+- Docker and Docker Compose (For running Airflow)
+- Git
+
+## Configuration Steps
+
+1. **Clone the Repository**: First, clone this repository into your local environment using the following Git command:
+
+```
+git clone https://github.com/<your_username>/<repository_name>.git
+```
+
+## Using Docker and Docker Compose to Run Airflow
+
+If you want to run the application using Docker and Docker Compose for Airflow, follow the steps below:
+
+1. **Build and Start Docker Compose Services**: In the root folder of the project, build and start the Docker Compose services using the following command:
+
+```
+docker-compose up -d
+```
+
+This command will download the necessary Docker images, build the containers, and start the Airflow services.
+
+2. **Access Airflow**: After the services have started, you can access the Airflow interface by opening your browser and going to `localhost:8080`.
+
+Now you should be able to see the application running and Airflow operational.
+
 
 ### Data Lake Structure
 
