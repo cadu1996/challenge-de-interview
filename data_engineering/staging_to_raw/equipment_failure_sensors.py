@@ -49,4 +49,7 @@ equipment_failure_sensors_df.printSchema()
 
 # COMMAND ----------
 
-equipment_failure_sensors_df.write.mode("overwrite").partitionBy("year", "month", "day").parquet(PATH_TO, compression="snappy")
+equipment_failure_sensors_df.repartition("year", "month", "day")\
+   .write.mode("overwrite")\
+   .partitionBy("year", "month", "day")\
+   .parquet(PATH_TO, compression="snappy")
