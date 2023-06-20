@@ -7,10 +7,6 @@ from pyspark.sql.types import *
 
 # COMMAND ----------
 
-os.path.join("/mnt/", "teste")
-
-# COMMAND ----------
-
 spark = SparkSession.builder.appName("Raw to Prepared").getOrCreate()
 
 # COMMAND ----------
@@ -34,4 +30,4 @@ fact_table_df = fact_table_df.repartition("equipment_group_name", "equipment_nam
 
 fact_table_df.write.mode("overwrite").partitionBy("equipment_group_name", "equipment_name", "sensor_id").format("delta").save(os.path.join(PATH_TO, "failure_log_table"))
 
-display(fact_table.limit(10))
+display(fact_table_df.limit(10))
