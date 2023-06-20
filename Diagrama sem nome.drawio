@@ -1,9 +1,53 @@
-<mxfile host="app.diagrams.net" modified="2023-06-20T04:56:33.348Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0" version="21.2.2" etag="cetzpjgCuYRUQzJqKI59" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-20T05:10:01.418Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0" etag="JcVrAnf2ahbtI2DTb48N" version="21.2.2" type="github">
   <diagram name="Página-1" id="0kEOZIYlHJwZ3SIHsoPB">
-    <mxGraphModel>
+    <mxGraphModel dx="1432" dy="803" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="3MVCzlnTl8XQ6zzWmxJz-1" target="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-1" value="&lt;div&gt;Source&lt;/div&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="170" width="230" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-2" value="equipment_failure_sensors.txt.gz" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-1">
+          <mxGeometry x="90" y="30" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-4" value="equipment_sensors.csv" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-1">
+          <mxGeometry x="90" y="160" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-5" value="equipment.json" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-1">
+          <mxGeometry x="90" y="290" width="60" height="80" as="geometry" />
+        </mxCell>
+        <UserObject label="Data Lake" id="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxCell style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+            <mxGeometry x="400" y="170" width="560" height="400" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="3MVCzlnTl8XQ6zzWmxJz-6" source="3MVCzlnTl8XQ6zzWmxJz-8" target="3MVCzlnTl8XQ6zzWmxJz-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-8" value="Staging" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry x="145" y="80" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="3MVCzlnTl8XQ6zzWmxJz-6" source="3MVCzlnTl8XQ6zzWmxJz-9" target="3MVCzlnTl8XQ6zzWmxJz-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-9" value="Raw" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry x="255" y="80" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-10" value="Prepared" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry x="365" y="80" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-11" value="Storage Account V2" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/storage/Storage_Accounts_Classic.svg;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry x="120" y="280" width="65" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-12" value="Azure Databricks" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/analytics/Azure_Databricks.svg;" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry x="380" y="264" width="62.8" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="3MVCzlnTl8XQ6zzWmxJz-18" value="Delta Lake" style="shape=image;verticalLabelPosition=bottom;verticalAlign=top;imageAspect=0;image=https://artdraw.org/svg/images/free/25/2b/2b-25-delta-lake.svg" vertex="1" parent="3MVCzlnTl8XQ6zzWmxJz-6">
+          <mxGeometry x="240" y="190" width="90" height="90" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
