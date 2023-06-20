@@ -1,40 +1,66 @@
 # Shape's Data Engineering Interview Tech Case
-The **FPSO** vessel contains some equipment and each equipment have multiple sensors. Every time a failure happens, we get all the sensors data from the failed equipment, and we store this information in a log file (the time is in GMT time zone).
+This technical case for the data engineering interview involves an **FPSO** vessel with various pieces of equipment, each equipped with multiple sensors. When a failure occurs, sensor data from the malfunctioning equipment is stored in a log file (note: all times are in GMT).
 
-You are provided 3 files: the log file named “**equipment_failure_sensors.txt**”; the file named “**equipment_sensors.csv**” with the relationships between sensors and equipment’s; and the file named “**equipment.json**” with the equipment data.
+You are given 3 files: a log file named “**equipment_failure_sensors.txt**”; a file named “**equipment_sensors.csv**” which maps sensors to equipment; and a file named “**equipment.json**” which contains data about the equipment.
 
-### OBS: This test can be done either *BEFORE* or *DURING* the tech interview.
+### Note: You can complete this test either *BEFORE* or *DURING* the tech interview.
 
 > ## Steps
 
-> - **Fork** or **Clone** this repository before starting the tech test.
+> 1. **Fork** or **Clone** this repository before starting the tech test.
 
-> - *Extract **equipment_failure_sensors.rar** to a path/folder so you can read the .txt data.*
+> 2. *Unzip **equipment_failure_sensors.rar** to a path/folder where you can access the .txt data.*
 
-> - You **must** structure your data in a way that queries will be optimized according to the data retrieval process regarding equipment, sensors, and dates. Data can also be manipulated in **ACID** transactions.
+> 3. You **must** structure your data in a way that optimizes queries, focusing on efficient data retrieval involving equipment, sensors, and dates. Data manipulation in **ACID** transactions is also expected.
 
-> - **Use Python, SQL and/or PySpark as the languages/frameworks - you may use other tools if necessary for recommended and/or plus actions.**
+> 4. **Python, SQL, and/or PySpark should be your primary languages/frameworks - you can use other tools if necessary for recommended and/or additional actions.**
 
-> - **You're free to modify the files into any extension, as long as the main data is preserved. If you wish to modify the source data, make sure you use a copy method to keep the new data decoupled from the source data.**
+> 5. **You're free to modify the files into any extension, provided the core data remains intact. If you need to modify the source data, ensure you use a copy method to keep the new data decoupled from the original data.**
 
-1. Total equipment failures that happened?
+Your solutions should answer the following:
 
-2. Which equipment name had most failures?
-
-3. Average amount of failures across equipment group, ordered by the number of failures in ascending order?
-
-4.  Rank the sensors which present the most number of errors by equipment name in an equipment group.
+1. What's the total number of equipment failures that occurred?
+2. Which piece of equipment experienced the most failures?
+3. What's the average number of failures across the equipment group, ordered by the number of failures in ascending order?
+4. Rank the sensors by the number of errors they reported, grouped by equipment name in an equipment group.
 
 ### Recommendations: 
 
->- Use OOP to structure your pipeline.
->- Use PEP or Black coding style.
+>- Structure your pipeline using OOP principles.
+>- Follow PEP or Black coding style.
 >- Use a GIT provider for code versioning.
->- Diagram of your resolution(s).
+>- Provide a diagram of your solutions.
 
-### Plus:
+### Bonus:
 
->- Tests.
+>- Write tests.
 >- Simulate a streaming pipeline.
->- Dockerize your app.
->- Orchestration architecture.
+>- Dockerize your application.
+>- Design an orchestration architecture.
+
+## Solution
+
+The following architecture was implemented to solve this challenge:
+
+![Architecture](img/architecture.png)
+
+### Technologies Used
+
+- Python
+- Pyspark
+- Airflow
+- Delta Lake
+- Storage Account V2
+- Databricks
+- Docker
+
+### Data Lake Structure
+
+The data lake was created using Storage Account, Databricks, and Delta Lake. It's structured into different layers, each with a specific purpose:
+
+- **Staging**: This is where data is initially stored without any processing or transformations. It's organized by ingestion date (year, month, and day).
+
+- **Raw**: At this layer, data undergoes preliminary transformations such as data type definition, conversion to parquet format, and other necessary transformations to make the data usable.
+
+- **Prepared**: In this final layer, the data is stored in Delta Lake format and organized to answer specific questions and facilitate faster queries.
+
